@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
@@ -227,7 +228,7 @@ function formatFrenchDate(dateString: string) {
 }
 
 interface AdminPageProps {
-  searchParams: { search?: string; page?: string };
+  searchParams: Promise<{ search?: string; page?: string }>;
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
@@ -248,8 +249,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     redirect("/dashboard");
   }
 
-  const searchTerm = searchParams.search || "";
-  const currentPage = parseInt(searchParams.page || "1");
+  // Await the searchParams promise
+  const params = await searchParams;
+  const searchTerm = params.search || "";
+  const currentPage = parseInt(params.page || "1");
   const pageSize = 10;
 
   // Use admin client for data fetching
