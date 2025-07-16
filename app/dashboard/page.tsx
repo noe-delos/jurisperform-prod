@@ -10,9 +10,11 @@ import { GraduationCap, Calendar, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { DashboardChatImproved } from "@/app/components/chat/dashboard-chat-improved";
 import type { User, UserCourseAccess, CourseType } from "@/lib/types";
+import { CourseLevel } from "@/app/lib/courses";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface CourseCardProps {
   course: CourseType;
@@ -22,6 +24,8 @@ interface CourseCardProps {
   isNext?: boolean;
   expiresAt?: string;
   index: number;
+  onSelect?: (course: CourseType) => void;
+  isSelected?: boolean;
 }
 
 function CourseCard({
@@ -32,130 +36,74 @@ function CourseCard({
   isNext,
   expiresAt,
   index,
+  onSelect,
+  isSelected,
 }: CourseCardProps) {
   // Determine background image based on course type
   const backgroundImage = course === "CRFPA" ? "/crfpa.png" : "/license.png";
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.3,
-        delay: 0.1 + index * 0.05,
-        ease: [0.4, 0, 0.2, 1],
-      }}
-      whileHover={{
-        scale: 1.01,
-        transition: { duration: 0.15 },
-      }}
-      className="relative rounded-xl overflow-hidden h-full flex flex-col shadow-soft"
+    <div
+      className={cn(
+        "relative rounded-xl overflow-hidden h-full flex flex-col shadow-soft cursor-pointer transition-all duration-200 hover:scale-105",
+        isSelected && "ring-2 ring-blue-500 ring-offset-2"
+      )}
       style={{
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
       }}
+      onClick={() => onSelect?.(course)}
     >
       {/* Darker overlay */}
       <div className="absolute inset-0 bg-black/60"></div>
 
       {/* Content */}
-      <div className="relative z-10 p-4 h-full flex flex-col text-white">
+      <div className="relative z-10 p-3 h-full flex flex-col text-white">
         {/* Header with badge */}
-        <div className="flex items-start justify-between mb-2">
+        <div className="flex items-start justify-between mb-1">
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-white dancing-script-bold mb-1">
+            <h3 className="text-xl font-bold text-white dancing-script-bold">
               {course}
             </h3>
             <p
               className={cn(
-                "text-xs text-white/90 font-medium",
-                course === "CRFPA" ? "text-[0.6rem] " : ""
+                "text-xs text-white/80 font-medium",
+                course === "CRFPA" ? "text-[0.55rem] leading-tight" : ""
               )}
             >
               {title}
             </p>
           </div>
-          <div className="ml-2">
+          <div className="ml-1">
             {isActive && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + index * 0.05, duration: 0.2 }}
-                className="inline-flex items-center rounded-full bg-blue-500/90 backdrop-blur-sm px-2 py-1 text-xs font-medium text-white"
-              >
+              <span className="inline-flex items-center rounded-full bg-blue-500/80 backdrop-blur-sm px-1.5 py-0.5 text-[0.65rem] font-medium text-white">
                 Actif
-              </motion.span>
+              </span>
             )}
             {isNext && (
-              <motion.span
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2 + index * 0.05, duration: 0.2 }}
-                className="inline-flex items-center rounded-full bg-green-500/90 backdrop-blur-sm px-2 py-1 text-xs font-medium text-white"
-              >
+              <span className="inline-flex items-center rounded-full bg-green-500/80 backdrop-blur-sm px-1.5 py-0.5 text-[0.65rem] font-medium text-white">
                 Suivant
-              </motion.span>
+              </span>
             )}
           </div>
         </div>
 
-        {/* Footer with expiration and button */}
-        <div className="flex items-end justify-between mt-auto">
-          <div className="flex-1">
-            {expiresAt && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.25 + index * 0.05 }}
-                className="flex items-center text-xs text-white/70"
-              >
-                <Calendar className="h-3 w-3 mr-1" />
-                Expire le{" "}
-                {new Date(expiresAt).toLocaleDateString("fr-FR", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </motion.div>
-            )}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 + index * 0.05 }}
-            className="ml-2"
-          >
-            {isActive && (
-              <Button
-                asChild
-                size="sm"
-                className="rounded-lg bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 transition-all duration-200 text-xs px-3 py-1"
-              >
-                <Link href={`/dashboard/courses/${course.toLowerCase()}`}>
-                  Accéder
-                </Link>
-              </Button>
-            )}
-
-            {isNext && (
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="rounded-lg bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 transition-all duration-200 text-xs px-3 py-1"
-              >
-                <Link href={`/dashboard/courses/${course.toLowerCase()}`}>
-                  Découvrir
-                </Link>
-              </Button>
-            )}
-          </motion.div>
+        {/* Footer with expiration */}
+        <div className="mt-auto">
+          {expiresAt && (
+            <div className="flex items-center text-[0.65rem] text-white/60">
+              <Calendar className="h-2.5 w-2.5 mr-0.5" />
+              {new Date(expiresAt).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "short",
+              })}
+            </div>
+          )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -218,8 +166,12 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [courseAccess, setCourseAccess] = useState<UserCourseAccess[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showChat, setShowChat] = useState(false);
+  const [selectedConversationId, setSelectedConversationId] = useState<string>();
+  const [selectedCourse, setSelectedCourse] = useState<CourseType | null>(null);
   const supabase = createClient();
 
+  // All useEffect hooks MUST be called before any conditional returns
   useEffect(() => {
     async function fetchUserData() {
       try {
@@ -256,6 +208,21 @@ export default function DashboardPage() {
     fetchUserData();
   }, []);
 
+  // Listen for conversation selection from sidebar
+  useEffect(() => {
+    const handleConversationSelect = (event: CustomEvent) => {
+      setSelectedConversationId(event.detail);
+      setShowChat(true);
+    };
+
+    window.addEventListener('selectConversation', handleConversationSelect as EventListener);
+    
+    return () => {
+      window.removeEventListener('selectConversation', handleConversationSelect as EventListener);
+    };
+  }, []);
+
+  // Early return AFTER all hooks
   if (loading || !user) {
     return <></>;
   }
@@ -266,153 +233,176 @@ export default function DashboardPage() {
   const nextCourse = getNextCourse(currentCourses);
   const isProspect = user.status === "prospect";
 
+  // Get user's primary course level for chat
+  const getUserLevel = (): CourseLevel => {
+    if (currentCourses.includes('CRFPA')) return 'CRFPA';
+    if (currentCourses.includes('L3')) return 'L3';
+    if (currentCourses.includes('L2')) return 'L2';
+    return 'L1';
+  };
+
+  const handleConversationStarted = () => {
+    setShowChat(true);
+  };
+
+  const handleCourseSelect = (course: CourseType) => {
+    setSelectedCourse(course);
+    // Update the chat component's selected course
+    const event = new CustomEvent('courseSelected', { detail: course });
+    window.dispatchEvent(event);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-7xl mx-auto space-y-8 py-5 pt-0">
-        {/* Centered Welcome */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-          className="text-center"
-        >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2 dancing-script-welcome text-5xl">
-            Bienvenue {user.prenom} !
-          </h1>
-        </motion.div>
+    <div className={cn(
+      showChat ? "h-[calc(100vh-2rem)] p-4" : "min-h-screen flex items-center justify-center"
+    )}>
+      <div className={cn(
+        "mx-auto",
+        showChat ? "w-full h-full max-w-6xl" : "max-w-7xl space-y-8 py-5 pt-0"
+      )}>
+        {/* Header content - hidden when chat is active */}
+        <AnimatePresence initial={false}>
+          {!showChat && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ 
+                duration: 0.25,
+                ease: "easeInOut"
+              }}
+            >
+              {/* Centered Welcome */}
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2 dancing-script-welcome text-5xl">
+                  Bienvenue {user.prenom} !
+                </h1>
+              </div>
 
-        {/* Age display for prospects */}
-        {isProspect && user.date_of_birth && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-            className="text-center"
-          >
-            <div className="inline-flex items-center rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-800">
-              <Clock className="h-4 w-4 mr-2" />
-              Âge : {calculateAge(user.date_of_birth)} ans
-            </div>
-          </motion.div>
-        )}
-
-        {/* Centered Textarea */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-          className="max-w-2xl mx-auto"
-        >
-          <motion.div
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className={cn(
-              "shadow-soft mx-auto h-fit min-h-24 max-h-48 w-full max-w-3xl overflow-hidden rounded-[1.5rem] border-2 border-muted bg-card p-1 transition-all"
-            )}
-          >
-            <Textarea
-              placeholder="Écrivez vos notes, objectifs ou questions ici..."
-              className="h-full  w-full flex-1 resize-none border-none  min-h-32 bg-transparent p-4 text-lg shadow-none focus-within:outline-none focus-visible:ring-0"
-            />{" "}
-          </motion.div>
-        </motion.div>
-
-        {/* Course Cards */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className="space-y-6"
-        >
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.25 }}
-            className="text-xl font-semibold text-gray-900 text-center"
-          >
-            Vos cours
-          </motion.h2>
-
-          <div className="px-4">
-            <div className="flex gap-4 justify-center flex-wrap max-w-6xl mx-auto">
-              {/* Current Courses */}
-              {currentCourses.map((course, index) => {
-                const access = courseAccess.find((a) => a.course === course);
-                return (
-                  <div key={course} className="flex-shrink-0 w-56 h-32">
-                    <CourseCard
-                      course={course}
-                      title={courseInfo[course].title}
-                      description={courseInfo[course].description}
-                      isActive={true}
-                      expiresAt={access?.expires_at}
-                      index={index}
-                    />
+              {/* Age display for prospects */}
+              {isProspect && user.date_of_birth && (
+                <div className="text-center mt-4">
+                  <div className="inline-flex items-center rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-800">
+                    <Clock className="h-4 w-4 mr-2" />
+                    Âge : {calculateAge(user.date_of_birth)} ans
                   </div>
-                );
-              })}
-
-              {/* Next Course */}
-              {nextCourse && (
-                <div className="flex-shrink-0 w-56 h-32">
-                  <CourseCard
-                    course={nextCourse}
-                    title={courseInfo[nextCourse].title}
-                    description={courseInfo[nextCourse].description}
-                    isActive={false}
-                    isNext={true}
-                    index={currentCourses.length}
-                  />
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* No courses message */}
-          {currentCourses.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-              className="text-center py-12"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.4 }}
-              >
-                <GraduationCap className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-              </motion.div>
-              <motion.h3
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.2 }}
-                className="text-lg font-medium text-gray-900 mb-2"
-              >
-                Aucun cours actif
-              </motion.h3>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.2 }}
-                className="text-gray-600 mb-6"
-              >
-                Contactez un administrateur pour obtenir l'accès aux cours.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.2 }}
-              >
-                <Button asChild variant="outline">
-                  <Link href="/dashboard/parametres">Voir mes paramètres</Link>
-                </Button>
-              </motion.div>
             </motion.div>
           )}
-        </motion.div>
+        </AnimatePresence>
+
+        {/* Chat Interface - always present */}
+        <div className={cn(
+          showChat ? "h-full" : "max-w-3xl mx-auto"
+        )}>
+          <DashboardChatImproved
+            userId={user.id}
+            userLevel={getUserLevel()}
+            selectedConversationId={selectedConversationId}
+            onConversationCreated={(conversationId) => {
+              setSelectedConversationId(conversationId);
+            }}
+            onConversationStarted={handleConversationStarted}
+          />
+        </div>
+
+        {/* Course Cards - hidden when chat is active */}
+        <AnimatePresence initial={false}>
+          {!showChat && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              transition={{ 
+                duration: 0.25,
+                delay: 0.1,
+                ease: "easeInOut"
+              }}
+              className="space-y-4"
+            >
+              <h2 className="text-lg font-semibold text-gray-900 text-center">
+                Vos cours
+              </h2>
+
+              <div className="px-2">
+                <div className="flex gap-3 justify-center flex-wrap max-w-4xl mx-auto">
+                  {/* Current Courses */}
+                  {currentCourses.map((course, index) => {
+                    const access = courseAccess.find((a) => a.course === course);
+                    return (
+                      <motion.div
+                        key={course}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ 
+                          duration: 0.15,
+                          delay: index * 0.02,
+                          ease: "easeOut"
+                        }}
+                        className="flex-shrink-0 w-48 h-28"
+                      >
+                        <CourseCard
+                          course={course}
+                          title={courseInfo[course].title}
+                          description={courseInfo[course].description}
+                          isActive={true}
+                          expiresAt={access?.expires_at}
+                          index={index}
+                          onSelect={handleCourseSelect}
+                          isSelected={selectedCourse === course}
+                        />
+                      </motion.div>
+                    );
+                  })}
+
+                  {/* Next Course */}
+                  {nextCourse && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ 
+                        duration: 0.15,
+                        delay: currentCourses.length * 0.02,
+                        ease: "easeOut"
+                      }}
+                      className="flex-shrink-0 w-48 h-28"
+                    >
+                      <CourseCard
+                        course={nextCourse}
+                        title={courseInfo[nextCourse].title}
+                        description={courseInfo[nextCourse].description}
+                        isActive={false}
+                        isNext={true}
+                        index={currentCourses.length}
+                        onSelect={handleCourseSelect}
+                        isSelected={selectedCourse === nextCourse}
+                      />
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+
+              {/* No courses message */}
+              {currentCourses.length === 0 && (
+                <div className="text-center py-12">
+                  <GraduationCap className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Aucun cours actif
+                  </h3>
+                  <p className="text-gray-600 mb-6">
+                    Contactez un administrateur pour obtenir l'accès aux cours.
+                  </p>
+                  <Button asChild variant="outline">
+                    <Link href="/dashboard/parametres">Voir mes paramètres</Link>
+                  </Button>
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
 }
+

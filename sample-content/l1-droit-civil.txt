@@ -1,0 +1,82 @@
+# DROIT CIVIL - L1
+## Cours de Droit Civil - Première Année
+
+### Introduction au Droit Civil
+
+Le droit civil est la branche du droit privé qui régit les rapports entre les personnes privées. Il constitue le droit commun des personnes et des biens.
+
+### Les Sources du Droit Civil
+
+#### 1. Le Code Civil
+Le Code civil de 1804, également appelé Code Napoléon, constitue la source principale du droit civil français.
+
+#### 2. La Jurisprudence
+Les décisions de justice, notamment celles de la Cour de cassation, créent et précisent les règles de droit.
+
+#### 3. La Doctrine
+Les travaux des professeurs de droit contribuent à l'interprétation et à l'évolution du droit.
+
+### Les Personnes Physiques
+
+#### A. La Personnalité Juridique
+La personnalité juridique s'acquiert à la naissance et se termine au décès.
+
+**Éléments constitutifs :**
+- Le nom
+- Le domicile
+- L'état civil
+- La nationalité
+
+#### B. La Capacité Juridique
+La capacité juridique se divise en :
+- Capacité de jouissance (aptitude à avoir des droits)
+- Capacité d'exercice (aptitude à exercer ses droits)
+
+### Les Biens
+
+#### 1. Classification des Biens
+**Distinction fondamentale :**
+- Biens meubles : peuvent être déplacés
+- Biens immeubles : ne peuvent être déplacés
+
+#### 2. La Propriété
+La propriété est le droit réel le plus complet. Elle confère :
+- L'usus (droit d'usage)
+- Le fructus (droit aux fruits)
+- L'abusus (droit de disposer)
+
+### Les Obligations
+
+#### A. Sources des Obligations
+1. **Le contrat** : accord de volontés créateur d'obligations
+2. **Le fait juridique** : événement produisant des effets de droit
+
+#### B. Classification des Obligations
+- Obligations de donner
+- Obligations de faire
+- Obligations de ne pas faire
+
+### Jurisprudence Importante
+
+**Arrêt Chronopost (Cass. com., 22 octobre 1996) :**
+Limitation de responsabilité et obligation essentielle.
+
+**Arrêt Baldus (Cass. civ. 1re, 3 mai 2000) :**
+Erreur sur la valeur et lésion.
+
+### Examens et Méthodologie
+
+#### Conseils pour la dissertation
+1. Analyser le sujet
+2. Construire un plan apparent
+3. Illustrer avec des exemples jurisprudentiels
+
+#### Conseils pour le cas pratique
+1. Identifier les problèmes de droit
+2. Rappeler la règle applicable
+3. Appliquer au cas d'espèce
+
+### Bibliographie
+- Malaurie et Aynès, "Droit civil"
+- Terré, Simler et Lequette, "Droit civil"
+- Carbonnier, "Droit civil"

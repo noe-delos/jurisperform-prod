@@ -10,6 +10,7 @@ pnpm-debug.log*
 out/           
 build/
 
+.env.example
 # Logs
 logs
 *.log

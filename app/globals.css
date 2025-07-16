@@ -130,6 +130,19 @@
     @apply bg-background text-foreground;
   }
 
+  @keyframes shimmer {
+    from {
+      background-position: 0 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s ease-in-out infinite;
+  }
+
   /* Custom Scrollbar Styles */
   ::-webkit-scrollbar {
     width: 8px;

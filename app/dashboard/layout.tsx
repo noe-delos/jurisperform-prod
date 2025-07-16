@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
-import { DashboardLayoutClient } from "./dashboard-layout-client";
+import { DashboardWrapper } from "./dashboard-wrapper";
 import { logout } from "@/app/actions";
 import type { User, UserCourseAccess } from "@/lib/types";
 
@@ -42,12 +42,12 @@ export default async function DashboardLayout({
   }
 
   return (
-    <DashboardLayoutClient
+    <DashboardWrapper
       user={user}
       courseAccess={courseAccess || []}
       onLogout={logout}
     >
       {children}
-    </DashboardLayoutClient>
+    </DashboardWrapper>
   );
 }

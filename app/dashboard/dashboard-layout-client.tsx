@@ -10,6 +10,7 @@ interface DashboardLayoutClientProps {
   courseAccess: UserCourseAccess[];
   onLogout: () => void;
   children: React.ReactNode;
+  onSelectConversation?: (conversationId: string) => void;
 }
 
 export function DashboardLayoutClient({
@@ -17,6 +18,7 @@ export function DashboardLayoutClient({
   courseAccess,
   onLogout,
   children,
+  onSelectConversation,
 }: DashboardLayoutClientProps) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -28,6 +30,7 @@ export function DashboardLayoutClient({
         onLogout={onLogout}
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={setIsSidebarCollapsed}
+        onSelectConversation={onSelectConversation}
       />
       <div className="flex-1 flex flex-col relative">
         <DashboardHeader user={user} onLogout={onLogout} />

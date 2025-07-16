@@ -9,6 +9,7 @@ import { Icon } from "@iconify/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SidebarConversationHistory } from "@/app/components/chat/sidebar-conversation-history";
 import type { User, UserCourseAccess } from "@/lib/types";
 
 interface SidebarProps {
@@ -17,6 +18,8 @@ interface SidebarProps {
   onLogout: () => void;
   isCollapsed?: boolean;
   onToggleCollapse?: (collapsed: boolean) => void;
+  onSelectConversation?: (conversationId: string) => void;
+  selectedConversationId?: string;
 }
 
 interface NavItem {
@@ -55,9 +58,7 @@ const navSections: NavSection[] = [
   },
   {
     title: "Mes conversations",
-    items: [
-      // Empty for now as requested
-    ],
+    items: [],
   },
 ];
 
@@ -67,8 +68,11 @@ export function Sidebar({
   onLogout,
   isCollapsed = false,
   onToggleCollapse,
+  onSelectConversation,
+  selectedConversationId,
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu
+  const [showBrunchCTA, setShowBrunchCTA] = useState(true); // Brunch CTA visibility
   const pathname = usePathname();
 
   const isAdmin = user.role === "admin" || user.role === "owner";
@@ -190,6 +194,30 @@ export function Sidebar({
                 (item) => !item.adminOnly || isAdmin
               );
 
+              // Special handling for conversations section
+              if (section.title === "Mes conversations") {
+                return (
+                  <div key={section.title} className="mb-6">
+                    {/* Section title */}
+                    {!isCollapsed && (
+                      <h3 className="px-3 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider transition-all duration-300">
+                        {section.title}
+                      </h3>
+                    )}
+                    
+                    {/* Conversation History */}
+                    <SidebarConversationHistory 
+                      isCollapsed={isCollapsed}
+                      selectedConversationId={selectedConversationId}
+                      onSelectConversation={(conversation) => {
+                        onSelectConversation?.(conversation.id);
+                        closeSidebar();
+                      }}
+                    />
+                  </div>
+                );
+              }
+
               if (filteredItems.length === 0) return null;
 
               return (
@@ -248,7 +276,7 @@ export function Sidebar({
           </nav>
 
           {/* Brunch CTA */}
-          {!isCollapsed && (
+          {!isCollapsed && showBrunchCTA && (
             <div className="px-4 pb-4">
               <div
                 className="relative rounded-lg overflow-hidden bg-cover bg-center p-4 min-h-[120px] flex flex-col justify-end"
@@ -259,6 +287,16 @@ export function Sidebar({
               >
                 {/* Dark overlay */}
                 <div className="absolute inset-0 bg-black/50"></div>
+
+                {/* Close button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowBrunchCTA(false)}
+                  className="absolute top-2 right-2 h-6 w-6 text-white hover:bg-white/20 z-20"
+                >
+                  <Icon icon="mdi-light:close" className="h-4 w-4" />
+                </Button>
 
                 {/* Content */}
                 <div className="relative z-10">
